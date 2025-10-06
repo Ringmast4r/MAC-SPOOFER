@@ -22,29 +22,9 @@ A cross-platform MAC address spoofing tool with both GUI and command-line interf
 
 ## Screenshots
 
-```
-┌─────────────────────────────────────────┐
-│      MAC Address Spoofer                │
-│                                         │
-│  Status: ● ORIGINAL MAC                 │
-│                                         │
-│  Network Interface: [WiFi ▼] [Refresh] │
-│  Current MAC: AA:BB:CC:DD:EE:FF         │
-│                                         │
-│  Vendor: [Apple ▼] [Use Random Vendor]  │
-│                                         │
-│  Custom: [00:11:22:33:44:55] [Use MAC]  │
-│                                         │
-│  [⚫ SPOOF ON] [Random] [Restore]       │
-│                                         │
-│  Log:                                   │
-│  ┌───────────────────────────────────┐  │
-│  │ MAC Spoofer initialized           │  │
-│  │ Selected interface: WiFi          │  │
-│  │ ...                               │  │
-│  └───────────────────────────────────┘  │
-└─────────────────────────────────────────┘
-```
+![MAC Spoofer Dashboard](asset.PNG)
+
+*MAC Address Spoofer GUI with Dark Mode theme showing spoofed MAC status*
 
 ## Installation
 
