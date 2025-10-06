@@ -1,0 +1,57 @@
+MIT License
+
+Copyright (c) 2025 MAC Address Spoofer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+DISCLAIMER OF LIABILITY:
+
+This software is intended for legitimate network administration, testing,
+privacy protection, and educational purposes only. By using this software,
+you agree to:
+
+1. Use this software only on networks and devices you own or have explicit
+   permission to modify.
+
+2. Comply with all applicable local, state, national, and international laws
+   and regulations regarding network security and MAC address modification.
+
+3. NOT use this software for:
+   - Unauthorized network access
+   - Bypassing network authentication or access controls
+   - Evading network bans or restrictions
+   - Identity spoofing or impersonation
+   - Any illegal or malicious activities
+
+4. Accept full responsibility for any consequences resulting from your use of
+   this software.
+
+The authors and contributors of this software:
+- Make no warranties regarding the software's functionality or suitability
+- Are not responsible for any misuse of this software
+- Are not liable for any damages, legal consequences, or losses incurred
+- Do not endorse or support any illegal use of this software
+- Reserve the right to refuse support to users who violate these terms
+
+USE AT YOUR OWN RISK. The authors assume no liability for any consequences
+of using this software, including but not limited to: network disruptions,
+legal issues, policy violations, or any other damages.
+
+By using this software, you acknowledge that you have read, understood, and
+agree to these terms and conditions.
