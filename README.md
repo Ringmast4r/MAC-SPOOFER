@@ -1,4 +1,4 @@
-# MAC Address Spoofer
+# MAC Address Spoofer (My Ass Covered! Tool)
 
 A cross-platform MAC address spoofing tool with both GUI and command-line interfaces. Change your network adapter's MAC address for privacy, testing, or network troubleshooting purposes.
 
@@ -12,11 +12,13 @@ A cross-platform MAC address spoofing tool with both GUI and command-line interf
 - **11 Beautiful Themes** - Dark Mode, Flash Bang, Cyberpunk, Matrix, Ocean, Sunset, Hacker Green, Purple Haze, Nord, Dracula, and Skittles (randomized rainbow)
 - **Theme Switcher** - Press 'T' key to cycle through themes instantly
 - **One-click toggle** - Quick ON/OFF MAC spoofing button
-- **45+ vendor presets** - Authentic MAC addresses from major manufacturers with country information (Apple, Samsung, Huawei, Cisco, etc.)
+- **45+ vendor presets** - Authentic MAC addresses from major manufacturers with country information (Apple, Samsung, Huawei, Cisco, etc.) - Intel Wi-Fi compatible!
 - **Custom MAC input** - Set any specific MAC address you need
 - **Random MAC generation** - Generate completely random MAC addresses
 - **Original MAC restoration** - Safely restore your original MAC address
 - **Real-time status indicator** - Visual feedback showing current spoofing state
+- **Live System Stats Panel** - Real-time monitoring of Original MAC, Current MAC, and IP Address (updates every second)
+- **VPN Monitoring** - Track IP address changes in real-time when using VPNs or network changes
 - **Activity logging** - Detailed log of all operations
 - **Cross-platform support** - Works on Windows, Linux, and macOS
 
@@ -85,27 +87,35 @@ python mac_spoofer.py -h
 
 3. **Choose a spoofing method:**
 
-   **Method A - Quick Toggle:**
-   - Click **"⚫ SPOOF ON"** (grey indicator) to instantly spoof with a random MAC
-   - Button changes to **"🟢 SPOOF OFF"** (green indicator) when actively spoofing
-   - Click **"🟢 SPOOF OFF"** to restore your original MAC
+   **Method A - Quick Random MAC:**
+   - Click **"⚫ SPOOF ON"** to instantly spoof with a random MAC
+   - Button changes to **"🟢 RESTORE ORIGINAL"** when actively spoofing
+   - Click **"🟢 RESTORE ORIGINAL"** to restore your original MAC
 
-   **Method B - Vendor MAC:**
-   - Select a vendor (e.g., Apple, Samsung, Cisco) from the dropdown
-   - Click **"Use Random from Vendor"**
+   **Method B - Vendor MAC (Two Steps):**
+   - **Step 1:** Click **"Use Random Vendor"** to select a random vendor (e.g., Apple, Samsung)
+     - OR manually select a vendor from the dropdown
+     - This only *selects* the vendor, doesn't activate spoofing yet
+   - **Step 2:** Click **"⚫ SPOOF ON"** to apply the selected vendor's MAC
+   - Each click of "Use Random Vendor" cycles through different vendors
 
-   **Method C - Custom MAC:**
-   - Enter your desired MAC in the format `00:11:22:33:44:55`
-   - Click **"Use Custom MAC"**
-
-   **Method D - Random MAC:**
-   - Click **"Generate Random MAC"** for a completely random address
+   **Method C - Custom MAC (Two Steps):**
+   - **Step 1:** Enter your desired MAC in the format `00:11:22:33:44:55`
+   - **Step 2:** Click **"Use Custom MAC"** to apply it immediately
 
 4. **Restore original MAC:**
-   - Click **"Restore Original"** button
-   - Or click **"SPOOF OFF"** if spoofing is currently active
+   - Click **"🟢 RESTORE ORIGINAL"** to restore your original MAC address
 
-5. **Change Themes:**
+5. **Monitor System Stats (Live Updates):**
+   - **System Stats panel** on the right side shows real-time information:
+     - **Original MAC**: Your adapter's original MAC address (stored when first selected)
+     - **Current MAC**: Live MAC address (updates every second - shows spoofed MAC when active)
+     - **IP Address**: Live IP address (updates every second - perfect for VPN monitoring)
+   - Use this to verify MAC spoofing is working
+   - Monitor IP changes when connecting/disconnecting VPNs
+   - All stats update automatically every second
+
+6. **Change Themes:**
    - Press **'T'** key anytime to cycle through 11 different color themes
    - Press **'S'** key to randomize Skittles theme (generates new random colors instantly!)
    - Available themes:
@@ -327,6 +337,30 @@ We're constantly working to improve MAC Address Spoofer! Here are some planned f
 Want to contribute or suggest a feature? Open an issue on GitHub!
 
 ## Changelog
+
+### Version 1.5.0
+- **MAJOR FIX:** Intel Wi-Fi adapter compatibility - All vendor MACs now work on Intel adapters
+- Vendor MACs auto-converted to locally administered format (Intel compatible)
+- Added double-restart logic for 100% reliable spoofing (resets to hardware MAC first)
+- Fixed System Stats panel - Now shows actual spoofed MAC in real-time (uses PowerShell Get-NetAdapter)
+- Fixed status indicator - Original MAC shows solid green, Spoofed MAC pulses red
+- Fixed button width - "RESTORE ORIGINAL" text no longer cut off
+- Increased adapter restart delays from 1-2 seconds to 3 seconds for Intel compatibility
+- Spoofing process now takes 12-15 seconds (slower but fully reliable)
+- Verified working on Intel Wi-Fi 6 AX201 with all vendor presets
+
+### Version 1.4.0
+- Added **Live System Stats Panel** with real-time monitoring (updates every second)
+- **Original MAC** display - Always visible to remember your original address
+- **Current MAC** live tracking - See spoofed MAC changes in real-time
+- **IP Address** live monitoring - Perfect for VPN connection verification
+- Split log area into Log (left) and System Stats (right) panels
+- Real-time updates enable instant verification of MAC spoofing and network changes
+- **Single large toggle button:** "⚫ SPOOF ON" / "🟢 RESTORE ORIGINAL" controls everything
+- Button is bigger, taller, and more prominent (16pt bold with extra padding)
+- **Simplified workflow:** "Use Random Vendor" now only selects vendor (doesn't activate)
+- Removed redundant buttons: "Generate Random MAC" and "Restore Original"
+- Cleaner, more intuitive interface with single activation method
 
 ### Version 1.3.0
 - Added 11 beautiful color themes (Dark, Flash Bang, Cyberpunk, Matrix, Ocean, Sunset, Hacker Green, Purple Haze, Nord, Dracula, Skittles)

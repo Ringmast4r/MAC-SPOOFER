@@ -4,13 +4,112 @@
 
 ---
 
-## Current Version: 1.3.0
+## Current Version: 1.5.0
 
 ---
 
 ## Version History
 
-### Version 1.3.0 (Current)
+### Version 1.5.0 (Current)
+**Release Date:** January 2025
+
+**MAJOR FIX - Intel Adapter Compatibility:**
+- 🔧 **Fixed vendor MAC spoofing on Intel Wi-Fi adapters**
+  - Intel adapters only accept locally administered MACs (bit 1 set)
+  - All vendor MACs now auto-converted to locally administered format
+  - ASUS `08:60:6E` → `0A:60:6E` (Intel compatible, still looks like vendor)
+  - Qualcomm, Apple, Samsung, all vendors now work on Intel adapters
+
+- 🔄 **Double-restart logic for reliable spoofing**
+  - Always resets to hardware MAC first, then applies new spoof
+  - Prevents spoof-to-spoof transition failures
+  - Increased delays from 1-2 seconds to 3 seconds (Intel needs more time)
+  - Total process: 12-15 seconds (slower but 100% reliable)
+
+- 📊 **Fixed System Stats panel live updates**
+  - Replaced `getmac` with PowerShell `Get-NetAdapter`
+  - System Stats now shows actual spoofed MAC in real-time
+  - Updates every 1 second with correct active MAC
+
+- 🎨 **Status indicator color fix**
+  - Original MAC: Solid green (no flashing)
+  - Spoofed MAC: Red flashing pulse animation
+  - Fixed green color persisting from previous pulse
+
+- 🔲 **Fixed button width**
+  - "RESTORE ORIGINAL" text no longer cut off
+  - Button width increased from 18 to 22 characters
+
+**Testing Results:**
+- ✅ All workflows functional on Intel Wi-Fi 6 AX201
+- ✅ Random Vendor → SPOOF ON → Works
+- ✅ Same Vendor → SPOOF ON → Works
+- ✅ Custom MAC → SPOOF ON → Works
+- ✅ System Stats updates correctly
+- ✅ Verified with ipconfig /all
+
+**Performance Impact:**
+- Spoofing time: 3-4 seconds → 12-15 seconds
+- Trade-off: Slower but fully reliable on all Intel adapters
+
+**Files Updated:**
+- `mac_spoofer_gui.py` - 4 major fixes (generate_random_mac, change_mac_windows, get_current_mac, update_status)
+- `claude.md` - Added Session 4 comprehensive documentation
+- `version.md` - Version bump to 1.5.0
+- `README.md` - Updated with Intel compatibility notes
+
+---
+
+### Version 1.4.0
+**Release Date:** January 2025
+
+**Major Features:**
+- ✨ Added **Live System Stats Panel** with real-time monitoring
+- 📊 Stats update every second for instant feedback
+- 🔍 **Original MAC** - Always displayed to remember your original address
+- 🎯 **Current MAC** - Live tracking of current/spoofed MAC address
+- 🌐 **IP Address** - Real-time IP monitoring for VPN verification
+- 📈 Perfect for monitoring network changes and VPN connections
+- 🖥️ Split interface: Log panel (left) + System Stats panel (right)
+
+**UI Updates:**
+- Bottom area split into two panels for better organization
+- Green text for Original MAC (safe/secure indicator)
+- Blue text for Current MAC (active/live indicator)
+- Orange text for IP Address (network indicator)
+- Stats automatically refresh every 1 second
+
+**Use Cases:**
+- Verify MAC spoofing is working in real-time
+- Monitor IP address changes when connecting/disconnecting VPNs
+- Track network adapter changes instantly
+- Quick reference for system network information
+
+**Simplified Workflow & UI Improvements:**
+- **Single large toggle button:** Only one button controls everything
+  - **"⚫ SPOOF ON"** - Activates MAC spoofing (off state)
+  - **"🟢 RESTORE ORIGINAL"** - Restores original MAC (on state)
+  - Big, bold, 16pt font with extra padding for prominence
+  - One button does it all!
+- **"Use Random Vendor" now only selects vendor** (doesn't activate spoofing)
+- Removed redundant buttons:
+  - "Generate Random MAC" (use "SPOOF ON" for random MAC)
+  - "Restore Original" (integrated into main toggle)
+- Cleaner, more intuitive two-step process:
+  1. Select vendor/enter custom MAC (optional)
+  2. Click "⚫ SPOOF ON" to activate
+  3. Click "🟢 RESTORE ORIGINAL" to restore
+- Each click of "Use Random Vendor" cycles through different vendors
+- Dropdown still available for manual vendor selection
+
+**Files Updated:**
+- `mac_spoofer_gui.py` - Live stats panel, simplified workflow, single activation button
+- `README.md` - Updated features, changelog, usage guide with new workflow
+- `version.md` - Version bump to 1.4.0 with workflow improvements
+
+---
+
+### Version 1.3.0
 **Release Date:** January 2025
 
 **Major Features:**

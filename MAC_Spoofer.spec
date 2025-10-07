@@ -5,7 +5,7 @@ a = Analysis(
     ['C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\mac_spoofer_gui.py'],
     pathex=[],
     binaries=[],
-    datas=[('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\README.md', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\README.txt', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\LICENSE', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\version.md', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\Run_MAC_Spoofer.bat', '.')],
+    datas=[('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\README.md', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\LICENSE', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\version.md', '.'), ('C:\\Users\\Squir\\Desktop\\MAC-SPOOFER-main\\asset.PNG', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

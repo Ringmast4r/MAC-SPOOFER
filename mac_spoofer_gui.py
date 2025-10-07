@@ -19,8 +19,9 @@ import time
 class MACSpooferGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("MAC Address Spoofer")
-        self.root.geometry("1000x750")
+        self.root.title("🎭 MAC Address Spoofer")
+        self.root.geometry("800x600")
+        self.root.minsize(550, 480)  # Ensure Log and System Stats always visible
         self.root.resizable(True, True)
 
         self.os_type = platform.system()
@@ -28,6 +29,11 @@ class MACSpooferGUI:
         self.current_interface = None
         self.current_adapter_guid = None
         self.is_spoofed = False
+
+        # Animation state for status indicator
+        self.pulse_active = False
+        self.pulse_brightness = 1.0
+        self.pulse_direction = -1  # -1 for dimming, 1 for brightening
 
         # Theme system
         self.current_theme_index = 0
@@ -380,7 +386,7 @@ class MACSpooferGUI:
 
         # Title
         self.title_label = ttk.Label(main_frame, text="MAC Address Spoofer", style='Title.TLabel')
-        self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
+        self.title_label.grid(row=0, column=0, columnspan=2, pady=8)
 
         # Status indicator
         self.status_frame = ttk.Frame(main_frame)
@@ -391,14 +397,15 @@ class MACSpooferGUI:
         self.status_label.pack()
 
         # Interface selection
-        interface_frame = ttk.LabelFrame(main_frame, text="Network Interface", padding="10")
-        interface_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=10)
+        interface_frame = ttk.LabelFrame(main_frame, text="Network Interface", padding="8")
+        interface_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=8)
 
         # Configure interface_frame to expand
         interface_frame.columnconfigure(1, weight=1)
+        interface_frame.columnconfigure(2, weight=0)
 
         ttk.Label(interface_frame, text="Select Interface:").grid(row=0, column=0, sticky=tk.W, padx=5)
-        self.interface_combo = ttk.Combobox(interface_frame, state="readonly")
+        self.interface_combo = ttk.Combobox(interface_frame, state="readonly", width=20)
         self.interface_combo.grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
         self.interface_combo.bind("<<ComboboxSelected>>", self.on_interface_selected)
 
@@ -413,61 +420,93 @@ class MACSpooferGUI:
         self.current_mac_label.grid(row=1, column=0, columnspan=3, pady=5)
 
         # Vendor selection
-        vendor_frame = ttk.LabelFrame(main_frame, text="Vendor MAC Presets", padding="10")
-        vendor_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=10)
+        vendor_frame = ttk.LabelFrame(main_frame, text="Vendor MAC Presets", padding="8")
+        vendor_frame.grid(row=3, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=6)
 
         # Configure vendor_frame to expand
         vendor_frame.columnconfigure(1, weight=1)
+        vendor_frame.columnconfigure(2, weight=0)
+        vendor_frame.columnconfigure(3, weight=0)
 
         ttk.Label(vendor_frame, text="Select Vendor:").grid(row=0, column=0, sticky=tk.W, padx=5)
         self.vendor_combo = ttk.Combobox(vendor_frame, state="readonly",
-                                        values=list(self.vendor_macs.keys()))
+                                        values=list(self.vendor_macs.keys()), width=20)
         self.vendor_combo.grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
 
-        ttk.Button(vendor_frame, text="Use Random from Vendor",
-                  command=self.use_vendor_mac).grid(row=0, column=2, padx=5)
+        ttk.Button(vendor_frame, text="Random Vendor",
+                  command=self.use_vendor_mac).grid(row=0, column=2, padx=(5, 2))
+        ttk.Button(vendor_frame, text="Same Vendor",
+                  command=self.regenerate_vendor_mac).grid(row=0, column=3, padx=(2, 5))
 
         # Custom MAC entry
-        custom_frame = ttk.LabelFrame(main_frame, text="Custom MAC Address", padding="10")
-        custom_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=10)
+        custom_frame = ttk.LabelFrame(main_frame, text="Custom MAC Address", padding="8")
+        custom_frame.grid(row=4, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=6)
 
         # Configure custom_frame to expand
         custom_frame.columnconfigure(1, weight=1)
+        custom_frame.columnconfigure(2, weight=0)
 
         ttk.Label(custom_frame, text="Enter MAC:").grid(row=0, column=0, sticky=tk.W, padx=5)
-        self.custom_mac_entry = ttk.Entry(custom_frame)
-        self.custom_mac_entry.grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E))
-        self.custom_mac_entry.insert(0, "00:11:22:33:44:55")
-
-        ttk.Button(custom_frame, text="Use Custom MAC",
-                  command=self.use_custom_mac).grid(row=0, column=2, padx=5)
+        self.custom_mac_entry = ttk.Entry(custom_frame, width=20)
+        self.custom_mac_entry.grid(row=0, column=1, padx=5, sticky=(tk.W, tk.E), columnspan=2)
+        # No default value - field starts empty, gets populated by Random/Same Vendor buttons
 
         # Control buttons
         control_frame = ttk.Frame(main_frame)
-        control_frame.grid(row=5, column=0, columnspan=2, pady=20)
+        control_frame.grid(row=5, column=0, columnspan=2, pady=10)
+
+        # Compact SPOOF button
+        button_style = ttk.Style()
+        button_style.configure('Large.TButton', font=('Arial', 13, 'bold'), padding=(10, 8))
 
         self.spoof_button = ttk.Button(control_frame, text="⚫ SPOOF ON",
-                                      command=self.toggle_spoof, width=20)
-        self.spoof_button.grid(row=0, column=0, padx=10)
+                                      command=self.toggle_spoof, width=22, style='Large.TButton')
+        self.spoof_button.pack(pady=5)
 
-        ttk.Button(control_frame, text="Generate Random MAC",
-                  command=self.use_random_mac, width=20).grid(row=0, column=1, padx=10)
+        # Bottom section container
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.grid(row=6, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
+        bottom_frame.columnconfigure(0, weight=1)  # Log takes more space
+        bottom_frame.columnconfigure(1, weight=0, minsize=190)  # Stats compact width
+        bottom_frame.rowconfigure(0, weight=1)
 
-        ttk.Button(control_frame, text="Restore Original",
-                  command=self.restore_original, width=20).grid(row=0, column=2, padx=10)
+        # Log output (left side)
+        log_frame = ttk.LabelFrame(bottom_frame, text="Log", padding="6")
+        log_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=(0, 5))
 
-        # Log output
-        log_frame = ttk.LabelFrame(main_frame, text="Log", padding="10")
-        log_frame.grid(row=6, column=0, columnspan=2, sticky=(tk.W, tk.E, tk.N, tk.S), pady=10)
-
-        # Remove fixed width - let it expand to fill available space
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=16,
+        self.log_text = scrolledtext.ScrolledText(log_frame, height=5,
                                                   bg=self.entry_bg, fg=self.fg_color,
                                                   insertbackground=self.fg_color,
                                                   selectbackground=self.select_bg,
                                                   selectforeground=self.fg_color,
                                                   wrap=tk.WORD)
         self.log_text.pack(fill=tk.BOTH, expand=True)
+
+        # System Stats (right side)
+        stats_frame = ttk.LabelFrame(bottom_frame, text="System Stats", padding="6")
+        stats_frame.grid(row=0, column=1, sticky=(tk.N, tk.S, tk.W, tk.E), padx=(5, 0))
+
+        # Uniform monospace font for all stats (smaller and compact)
+        stats_label_font = ('Consolas', 9)
+        stats_value_font = ('Consolas', 9)
+
+        # Original MAC
+        ttk.Label(stats_frame, text="Original MAC:", font=stats_label_font).pack(anchor=tk.W, pady=(0,1))
+        self.stats_original_mac = ttk.Label(stats_frame, text="Not selected",
+                                           font=stats_value_font, foreground='#00ff00')
+        self.stats_original_mac.pack(anchor=tk.W, padx=(3,0), pady=(0,6))
+
+        # Current MAC
+        ttk.Label(stats_frame, text="Current MAC:", font=stats_label_font).pack(anchor=tk.W, pady=(0,1))
+        self.stats_current_mac = ttk.Label(stats_frame, text="Not selected",
+                                          font=stats_value_font, foreground='#00aaff')
+        self.stats_current_mac.pack(anchor=tk.W, padx=(3,0), pady=(0,6))
+
+        # IP Address
+        ttk.Label(stats_frame, text="IP Address:", font=stats_label_font).pack(anchor=tk.W, pady=(0,1))
+        self.stats_ip = ttk.Label(stats_frame, text="N/A",
+                                 font=stats_value_font, foreground='#ffaa00')
+        self.stats_ip.pack(anchor=tk.W, padx=(3,0))
 
         # Theme indicator - discrete at bottom
         self.theme_label = ttk.Label(main_frame, text=f'Theme: {self.current_theme_name} (press "t" to change | "s" for skittles)',
@@ -478,13 +517,38 @@ class MACSpooferGUI:
         self.log(f"Operating System: {self.os_type}")
         self.log(f"Current Theme: {self.current_theme_name}")
 
+        # Start live stats update
+        self.update_stats_live()
+
+    def update_stats_live(self):
+        """Update system stats panel in real-time"""
+        if self.current_interface:
+            # Get current MAC and IP
+            current_mac = self.get_current_mac(self.current_interface)
+            ip_address = self.get_ip_address(self.current_interface)
+
+            # Always display Original MAC (never changes once stored)
+            original_mac = self.original_macs.get(self.current_interface, "Not stored")
+            self.stats_original_mac.config(text=original_mac)
+
+            # Update Current MAC (live, changes when spoofed)
+            if current_mac:
+                self.stats_current_mac.config(text=current_mac)
+                self.current_mac_label.config(text=f"Current MAC: {current_mac}")
+
+            # Update IP Address (live, changes with VPN/network)
+            self.stats_ip.config(text=ip_address)
+
+        # Schedule next update in 1000ms (1 second)
+        self.root.after(1000, self.update_stats_live)
+
     def log(self, message):
         """Add message to log"""
         self.log_text.insert(tk.END, f"{message}\n")
         self.log_text.see(tk.END)
 
     def get_interfaces(self):
-        """Get list of network interfaces"""
+        """Get list of network interfaces (only connected/active ones)"""
         interfaces = []
         try:
             if self.os_type == "Windows":
@@ -494,7 +558,8 @@ class MACSpooferGUI:
                 for line in lines:
                     if line.strip():
                         parts = line.split()
-                        if len(parts) >= 4:
+                        # Only include connected interfaces (filter out disconnected Wintun, etc.)
+                        if len(parts) >= 4 and parts[1] == "Connected":
                             interface_name = ' '.join(parts[3:])
                             interfaces.append(interface_name)
             else:
@@ -511,11 +576,13 @@ class MACSpooferGUI:
         """Get the current MAC address of an interface"""
         try:
             if self.os_type == "Windows":
-                cmd = f'getmac /v /fo csv | findstr /i "{interface}"'
-                result = subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode()
-                mac_match = re.search(r"([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})", result)
-                if mac_match:
-                    return mac_match.group(0)
+                # Use PowerShell Get-NetAdapter to get actual active MAC (including spoofed)
+                cmd = f'powershell "Get-NetAdapter -Name \'{interface}\' | Select-Object -ExpandProperty MacAddress"'
+                result = subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode().strip()
+                # PowerShell returns MAC in format: XX-XX-XX-XX-XX-XX
+                if result and re.match(r"^([0-9A-Fa-f]{2}[-:]){5}([0-9A-Fa-f]{2})$", result):
+                    # Convert to colon format for consistency
+                    return result.replace('-', ':')
             else:
                 result = subprocess.check_output(f"ip link show {interface}", shell=True).decode()
                 mac_match = re.search(r"link/ether\s+([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})", result)
@@ -524,6 +591,24 @@ class MACSpooferGUI:
         except Exception as e:
             self.log(f"Error getting MAC: {e}")
         return None
+
+    def get_ip_address(self, interface):
+        """Get the current IP address of an interface"""
+        try:
+            if self.os_type == "Windows":
+                cmd = f'netsh interface ip show addresses "{interface}"'
+                result = subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode()
+                ip_match = re.search(r"IP Address:\s+(\d+\.\d+\.\d+\.\d+)", result)
+                if ip_match:
+                    return ip_match.group(1)
+            else:
+                result = subprocess.check_output(f"ip addr show {interface}", shell=True).decode()
+                ip_match = re.search(r"inet\s+(\d+\.\d+\.\d+\.\d+)", result)
+                if ip_match:
+                    return ip_match.group(1)
+        except Exception as e:
+            pass  # Silently fail for IP
+        return "N/A"
 
     def refresh_interfaces(self):
         """Refresh the list of network interfaces"""
@@ -539,6 +624,8 @@ class MACSpooferGUI:
         self.current_interface = self.interface_combo.get()
         if self.current_interface:
             current_mac = self.get_current_mac(self.current_interface)
+            ip_address = self.get_ip_address(self.current_interface)
+
             if current_mac:
                 # Store original MAC if not already stored
                 if self.current_interface not in self.original_macs:
@@ -546,11 +633,21 @@ class MACSpooferGUI:
                 self.current_mac_label.config(text=f"Current MAC: {current_mac}")
                 self.log(f"Selected interface: {self.current_interface} (MAC: {current_mac})")
 
+                # Update stats panel
+                original_mac = self.original_macs.get(self.current_interface, "Not stored")
+                self.stats_original_mac.config(text=original_mac)
+                self.stats_current_mac.config(text=current_mac)
+                self.stats_ip.config(text=ip_address)
+
     def generate_random_mac(self, prefix=None):
         """Generate a random MAC address"""
         if prefix:
-            # Use vendor prefix
+            # Use vendor prefix, but make it locally administered for Intel compatibility
             mac_bytes = prefix.split(':')
+            # Convert first octet to locally administered (set bit 1)
+            first_octet = int(mac_bytes[0], 16) | 0x02
+            mac_bytes[0] = f"{first_octet:02X}"
+            # Add random bytes for last 3 octets
             mac_bytes += [f"{random.randint(0, 255):02X}" for _ in range(3)]
         else:
             # Generate completely random MAC (locally administered)
@@ -638,13 +735,17 @@ class MACSpooferGUI:
 
             self.log(f"Found adapter at: {registry_path}")
 
-            # Open registry key with write access
+            # STEP 1: First restore original MAC (delete registry override)
+            # This ensures Intel adapters fully reset before applying new spoof
+            self.log("Clearing previous MAC override...")
             try:
                 with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, registry_path, 0,
-                                   winreg.KEY_SET_VALUE | winreg.KEY_READ) as key:
-                    # Set the NetworkAddress value
-                    winreg.SetValueEx(key, "NetworkAddress", 0, winreg.REG_SZ, new_mac_clean)
-                    self.log(f"Registry updated with new MAC: {new_mac_clean}")
+                                   winreg.KEY_SET_VALUE) as key:
+                    try:
+                        winreg.DeleteValue(key, "NetworkAddress")
+                        self.log("Previous override cleared")
+                    except FileNotFoundError:
+                        self.log("No previous override found")
             except PermissionError:
                 self.log("ERROR: Permission denied! Run as Administrator.")
                 messagebox.showerror("Permission Denied",
@@ -652,25 +753,55 @@ class MACSpooferGUI:
                     "Please run this application as Administrator.")
                 return False
 
-            # Disable and re-enable the adapter to apply changes
-            self.log("Restarting network adapter...")
+            # STEP 2: Restart adapter to apply original MAC
+            self.log("Resetting adapter to hardware MAC...")
             try:
-                # Disable adapter
                 disable_cmd = f'netsh interface set interface "{interface}" disable'
                 result = subprocess.run(disable_cmd, shell=True, capture_output=True, text=True)
                 if result.returncode != 0:
                     self.log(f"Warning: Could not disable adapter: {result.stderr}")
                 else:
-                    time.sleep(1)
+                    time.sleep(3)
                     self.log("Adapter disabled")
 
-                # Enable adapter
                 enable_cmd = f'netsh interface set interface "{interface}" enable'
                 result = subprocess.run(enable_cmd, shell=True, capture_output=True, text=True)
                 if result.returncode != 0:
                     self.log(f"Warning: Could not enable adapter: {result.stderr}")
                 else:
-                    time.sleep(2)
+                    time.sleep(3)
+                    self.log("Adapter reset to hardware MAC")
+            except Exception as e:
+                self.log(f"Error resetting adapter: {e}")
+
+            # STEP 3: Now apply the new spoofed MAC
+            self.log(f"Applying new MAC: {new_mac}")
+            try:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, registry_path, 0,
+                                   winreg.KEY_SET_VALUE | winreg.KEY_READ) as key:
+                    winreg.SetValueEx(key, "NetworkAddress", 0, winreg.REG_SZ, new_mac_clean)
+                    self.log(f"Registry updated with new MAC: {new_mac_clean}")
+            except PermissionError:
+                self.log("ERROR: Permission denied! Run as Administrator.")
+                return False
+
+            # STEP 4: Restart adapter again to apply new spoofed MAC
+            self.log("Restarting adapter with new MAC...")
+            try:
+                disable_cmd = f'netsh interface set interface "{interface}" disable'
+                result = subprocess.run(disable_cmd, shell=True, capture_output=True, text=True)
+                if result.returncode != 0:
+                    self.log(f"Warning: Could not disable adapter: {result.stderr}")
+                else:
+                    time.sleep(3)
+                    self.log("Adapter disabled")
+
+                enable_cmd = f'netsh interface set interface "{interface}" enable'
+                result = subprocess.run(enable_cmd, shell=True, capture_output=True, text=True)
+                if result.returncode != 0:
+                    self.log(f"Warning: Could not enable adapter: {result.stderr}")
+                else:
+                    time.sleep(3)
                     self.log("Adapter enabled")
                     self.log("✓ MAC address changed successfully!")
                     return True
@@ -697,38 +828,39 @@ class MACSpooferGUI:
             return False
 
     def use_vendor_mac(self):
-        """Use a random MAC from selected vendor"""
-        if not self.current_interface:
-            messagebox.showwarning("No Interface", "Please select a network interface first")
-            return
+        """Select a random vendor and generate MAC preview"""
+        # Automatically select a random vendor
+        vendor = random.choice(list(self.vendor_macs.keys()))
+        self.vendor_combo.set(vendor)  # Update dropdown to show selected vendor
 
-        vendor = self.vendor_combo.get()
-        if not vendor:
-            messagebox.showwarning("No Vendor", "Please select a vendor first")
-            return
-
+        # Generate MAC from vendor prefix
         prefix = random.choice(self.vendor_macs[vendor])
         new_mac = self.generate_random_mac(prefix)
+
+        # Display in Custom MAC field for preview
+        self.custom_mac_entry.delete(0, tk.END)
+        self.custom_mac_entry.insert(0, new_mac)
+
         self.log(f"Generated {vendor} MAC: {new_mac}")
 
-        if self.change_mac(new_mac):
-            self.is_spoofed = True
-            self.update_status()
+    def regenerate_vendor_mac(self):
+        """Generate a new MAC from the currently selected vendor"""
+        vendor = self.vendor_combo.get()
 
-    def use_custom_mac(self):
-        """Use custom MAC address"""
-        if not self.current_interface:
-            messagebox.showwarning("No Interface", "Please select a network interface first")
+        if not vendor:
+            messagebox.showinfo("No Vendor Selected",
+                              "Please select a vendor from the dropdown first,\nor click 'Random Vendor' to pick one.")
             return
 
-        custom_mac = self.custom_mac_entry.get().strip()
-        if not re.match(r"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", custom_mac):
-            messagebox.showerror("Invalid MAC", "Please enter a valid MAC address (e.g., 00:11:22:33:44:55)")
-            return
+        # Generate new MAC from selected vendor prefix
+        prefix = random.choice(self.vendor_macs[vendor])
+        new_mac = self.generate_random_mac(prefix)
 
-        if self.change_mac(custom_mac):
-            self.is_spoofed = True
-            self.update_status()
+        # Display in Custom MAC field for preview
+        self.custom_mac_entry.delete(0, tk.END)
+        self.custom_mac_entry.insert(0, new_mac)
+
+        self.log(f"Regenerated {vendor} MAC: {new_mac}")
 
     def use_random_mac(self):
         """Generate and use completely random MAC"""
@@ -746,14 +878,9 @@ class MACSpooferGUI:
     def change_mac(self, new_mac):
         """Change MAC address"""
         if self.os_type == "Windows":
-            success = self.change_mac_windows(self.current_interface, new_mac)
+            return self.change_mac_windows(self.current_interface, new_mac)
         else:
-            success = self.change_mac_linux(self.current_interface, new_mac)
-
-        if success:
-            # Update display
-            self.current_mac_label.config(text=f"Current MAC: {new_mac}")
-        return success
+            return self.change_mac_linux(self.current_interface, new_mac)
 
     def restore_original_windows(self, interface):
         """Restore original MAC on Windows by removing registry override"""
@@ -837,8 +964,31 @@ class MACSpooferGUI:
             return
 
         if not self.is_spoofed:
-            # Turn spoofing ON - use random MAC
-            self.use_random_mac()
+            # Turn spoofing ON
+            # Priority: 1) Custom MAC field, 2) Selected vendor, 3) Random MAC
+            custom_mac = self.custom_mac_entry.get().strip()
+
+            # Check if custom MAC field has valid MAC
+            if custom_mac and re.match(r"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", custom_mac):
+                # Use MAC from entry field
+                self.log(f"Using MAC from entry field: {custom_mac}")
+                if self.change_mac(custom_mac):
+                    self.is_spoofed = True
+                    self.update_status()
+            else:
+                # Fall back to vendor or random
+                vendor = self.vendor_combo.get()
+                if vendor:
+                    # Use selected vendor MAC
+                    prefix = random.choice(self.vendor_macs[vendor])
+                    new_mac = self.generate_random_mac(prefix)
+                    self.log(f"Generated {vendor} MAC: {new_mac}")
+                    if self.change_mac(new_mac):
+                        self.is_spoofed = True
+                        self.update_status()
+                else:
+                    # No vendor selected, use completely random MAC
+                    self.use_random_mac()
         else:
             # Turn spoofing OFF - restore original
             self.restore_original()
@@ -847,10 +997,43 @@ class MACSpooferGUI:
         """Update status indicator"""
         if self.is_spoofed:
             self.status_label.config(text="● SPOOFED MAC", style='StatusRed.TLabel')
-            self.spoof_button.config(text="🟢 SPOOF OFF")
+            self.spoof_button.config(text="🟢 RESTORE ORIGINAL")
+            # Start pulsing animation
+            if not self.pulse_active:
+                self.pulse_active = True
+                self.pulse_status_indicator()
         else:
-            self.status_label.config(text="● ORIGINAL MAC", style='StatusGreen.TLabel')
+            self.status_label.config(text="● ORIGINAL MAC", style='StatusGreen.TLabel', foreground='#00ff00')
             self.spoof_button.config(text="⚫ SPOOF ON")
+            # Stop pulsing animation
+            self.pulse_active = False
+
+    def pulse_status_indicator(self):
+        """Gentle pulsing animation for SPOOFED MAC indicator"""
+        if not self.pulse_active:
+            return
+
+        # Adjust brightness (0.4 to 1.0 range for gentle pulse)
+        self.pulse_brightness += self.pulse_direction * 0.04
+
+        # Reverse direction at boundaries
+        if self.pulse_brightness <= 0.4:
+            self.pulse_brightness = 0.4
+            self.pulse_direction = 1
+        elif self.pulse_brightness >= 1.0:
+            self.pulse_brightness = 1.0
+            self.pulse_direction = -1
+
+        # Calculate color based on brightness (red channel)
+        red_value = int(255 * self.pulse_brightness)
+        color = f'#{red_value:02x}0000'
+
+        # Update the label color directly
+        self.status_label.config(foreground=color)
+
+        # Continue animation (50ms = smooth 20fps)
+        if self.pulse_active:
+            self.root.after(50, self.pulse_status_indicator)
 
 def main():
     root = tk.Tk()
