@@ -13,8 +13,13 @@ import random
 import platform
 import ctypes
 import sys
-import winreg
 import time
+
+# Windows-only module - import conditionally for cross-platform compatibility
+try:
+    import winreg
+except ImportError:
+    winreg = None  # Linux/macOS don't have Windows Registry
 
 class MACSpooferGUI:
     def __init__(self, root):
