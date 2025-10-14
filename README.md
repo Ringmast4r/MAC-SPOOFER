@@ -38,7 +38,7 @@ A cross-platform MAC address spoofing tool with both GUI and command-line interf
 ### Clone or Download
 
 ```bash
-git clone https://github.com/yourusername/mac-spoofer.git
+git clone https://github.com/ringmast4r/mac-spoofer.git
 cd mac-spoofer
 ```
 
@@ -393,3 +393,4 @@ Want to contribute or suggest a feature? Open an issue on GitHub!
 ---
 
 **⚠️ Use at your own risk. Always comply with local laws and network policies.**
+
