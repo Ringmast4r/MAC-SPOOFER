@@ -10,6 +10,7 @@ Use the SANS-derived shell, a single instance and one tray icon. Close hides;
 Exit really exits. Do not replace the user's running binary during an adapter operation.
 
 Patrick selected Blade (Sin City 14) for the shortcut and tray on October 7, 2026.
+He then requested its white background; keep shortcut-blade-white.ico on the shortcuts.
 The Net Works globe stays on the application/window. His installed preference is
 dark; honor saved theme settings. A new installation follows the memo's light default.
 

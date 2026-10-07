@@ -1,4 +1,7 @@
 Net Works globe: existing Source Code Analyzer assets/nw-globe-1024.png.
 Shortcut/tray: Blade, Sin City 14, explicitly selected by Patrick on 2026-10-07.
 Source: https://networks-corp.com/icon-demos/ ; original 1024px artwork and gallery SVG retained.
-Windows frames derived from original art using a rounded transparent outer clip; artwork is unchanged.
+Patrick requested a white shortcut background on 2026-10-07. The generator replaces only
+the connected exterior dark background with white, preserving the Blade artwork and
+transparent rounded corners. shortcut-blade-white.ico uses a new Explorer cache path;
+shortcut-blade.ico is an identical compatibility copy for existing 1.6.0 EXEs.

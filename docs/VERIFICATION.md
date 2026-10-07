@@ -11,3 +11,11 @@
 - The owner requested dark mode. The installed app's persisted preference is dark, and its native page-ready callback confirmed dark after a clean relaunch.
 
 The public screenshots use synthetic adapter data. The installed-app read-only screenshot remains in excluded `build/` because it contains owner network addresses. UAC acceptance and physical driver compatibility were not tested. The old root/dist EXEs are preserved locally under `build/` and the previous revision remains in Git history.
+
+October 7 shortcut correction: the owner requested a white background for Blade.
+Ten sizes were inspected on black and white. Desktop, Start Menu and project
+shortcuts now reference `assets/shortcut-blade-white.ico`; Explorer received an
+item-change notification. The compatibility icon uses the same artwork for the
+installed 1.6.0 tray on its next launch. This was an external-asset update; the
+EXE was not rebuilt or restarted, and its embedded standalone icon bundle still
+belongs to 1.6.0. Native Desktop pixel review remains unavailable.

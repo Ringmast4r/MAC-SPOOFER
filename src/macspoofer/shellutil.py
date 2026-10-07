@@ -36,17 +36,17 @@ def shortcut_icon_file() -> Path:
     A shortcut needs a path that outlives the process, so a one-file EXE that has
     no assets/ folder next to it keeps a copy of its bundled icon in %LOCALAPPDATA%.
     """
-    cands = [Path(__file__).resolve().parents[2] / "assets" / "shortcut-blade.ico"]
+    cands = [Path(__file__).resolve().parents[2] / "assets" / "shortcut-blade-white.ico"]
     if getattr(sys, "frozen", False):
         exe = Path(sys.executable).resolve()
-        cands[0:0] = [exe.parent / "assets" / "shortcut-blade.ico", exe.parent / "shortcut-blade.ico"]
+        cands[0:0] = [exe.parent / "assets" / "shortcut-blade-white.ico", exe.parent / "shortcut-blade-white.ico"]
     for p in cands:
         if p.is_file():
             return p
-    bundled = BUNDLE / "assets" / "shortcut-blade.ico"
+    bundled = BUNDLE / "assets" / "shortcut-blade-white.ico"
     if not bundled.is_file():
         return Path()
-    keep = HOME / "shortcut-blade.ico"
+    keep = HOME / "shortcut-blade-white.ico"
     try:
         if not keep.is_file() or keep.stat().st_size != bundled.stat().st_size:
             keep.parent.mkdir(parents=True, exist_ok=True)
