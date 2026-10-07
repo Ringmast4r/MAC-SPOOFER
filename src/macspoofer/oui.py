@@ -62,7 +62,9 @@ class Catalog:
                               ('%' + escaped + '%', raw + '%' if re.fullmatch('[0-9A-F]+', raw) else '!', limit)).fetchall()
         return [dict(row) for row in rows]
 
-    def generate(self, prefix=None):
+    def generate(self, prefix=None, mode='compatible'):
+        if mode not in ('compatible', 'exact'):
+            raise ValueError('Choose compatible local or exact registered prefix mode.')
         if not prefix:
             octets = bytearray(secrets.token_bytes(6))
             octets[0] = (octets[0] & 0xFC) | 2
@@ -74,4 +76,10 @@ class Catalog:
             raise ValueError('Select a current globally administered unicast prefix from the catalog.')
         # Nibble precision is essential for MA-M (/28) and MA-S (/36).
         suffix = secrets.token_hex(6).upper()[:12-len(prefix)]
-        return self.inspect(prefix + suffix)
+        raw = prefix + suffix
+        if mode == 'compatible':
+            # Preserve the old GUI's local-bit conversion without claiming a vendor identity.
+            raw = f'{int(raw[:2], 16) | 2:02X}' + raw[2:]
+        result = self.inspect(raw)
+        result['generation'] = {'mode':mode, 'source_prefix':prefix, 'source_vendor':row['vendor']}
+        return result

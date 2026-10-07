@@ -26,7 +26,7 @@ def start_server(service, desktop=None, port=PORT):
             self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'")
             self.end_headers()
             try: self.wfile.write(body)
-            except (ConnectionResetError, BrokenPipeError): pass
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError): pass
 
         def trusted(self, api=False):
             host = '127.0.0.1:' + str(self.server.server_port)
@@ -64,7 +64,7 @@ def start_server(service, desktop=None, port=PORT):
                 body = json.loads(self.rfile.read(length) or b'{}')
                 if not isinstance(body,dict): raise ValueError('Expected an object.')
                 if self.path == '/api/refresh': result = service.refresh()
-                elif self.path == '/api/generate': result = service.catalog.generate(body.get('prefix'))
+                elif self.path == '/api/generate': result = service.catalog.generate(body.get('prefix'), body.get('mode', 'compatible'))
                 elif self.path == '/api/theme': result = service.theme(body.get('theme'))
                 elif self.path == '/api/ready':
                     service.ui = {key:body.get(key) for key in ('title','ready','adapters','theme')}

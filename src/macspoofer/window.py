@@ -104,13 +104,18 @@ def run_window(service) -> None:
     window.events.closing += on_closing
 
     def loaded():
-        def snapshot():
+        def snapshot(attempt=0):
             if desktop._exiting:
                 return
             try:
-                (DATA / 'runtime.json').write_text(json.dumps({'pid':os.getpid(),'url':url,'loaded':True,'tray':bool(tray and tray.ok),'ui':service.ui}))
-                if not service.ui.get('ready'):
-                    retry = threading.Timer(1, snapshot)
+                # Inspect this native renderer, not a callback that another browser can send.
+                native = window.evaluate_js("""({title:document.title, url:location.href,
+                    ready:window.appReady===true, adapters:document.querySelectorAll('.adapter').length,
+                    theme:document.documentElement.dataset.theme,
+                    status:document.getElementById('status-text')?.textContent || ''})""")
+                (DATA / 'runtime.json').write_text(json.dumps({'pid':os.getpid(),'url':url,'loaded':True,'tray':bool(tray and tray.ok),'ui':native or {}}))
+                if not (native or {}).get('ready') and attempt < 30:
+                    retry = threading.Timer(1, lambda: snapshot(attempt+1))
                     retry.daemon = True
                     retry.start()
             except Exception as exc: write_log('Startup check: '+str(exc))

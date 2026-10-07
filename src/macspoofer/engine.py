@@ -92,7 +92,9 @@ ConvertTo-Json -InputObject $items -Depth 4 -Compress
     def restart(self, adapter_id):
         target = guid(adapter_id)  # UUID grammar; never interpolate adapter names.
         powershell("$a=@(Get-NetAdapter -IncludeHidden | Where-Object { $_.InterfaceGuid.ToString().Trim('{}') -eq '" + target +
-                   "' }); if($a.Count -ne 1){throw 'Adapter not uniquely found'}; $a[0] | Restart-NetAdapter -Confirm:$false")
+                   "' }); if($a.Count -ne 1){throw 'Adapter not uniquely found'}; "
+                   "try { $a[0] | Disable-NetAdapter -Confirm:$false; Start-Sleep -Seconds 3 } "
+                   "finally { $a[0] | Enable-NetAdapter -Confirm:$false }; Start-Sleep -Seconds 3")
 
     def change(self, adapter_id, address, journal, log, wait=time.sleep):
         if not is_admin(): raise PermissionError('Relaunch as administrator before changing an adapter.')
@@ -106,20 +108,34 @@ ConvertTo-Json -InputObject $items -Depth 4 -Compress
         journal({'adapter_id':adapter_id, 'name':item['name'], 'before':item['mac'],
                  'permanent':item['permanent'], 'previous_override':old, 'requested':address})
         expected = address or item['permanent']
-        log('Writing override.' if address else 'Removing the configured override.')
         observed = None
+        read_error = None
         try:
+            if address:
+                # Legacy 1.5 reset the driver with no override before every new address.
+                # Keep exact GUID targeting and journal the prior value before either step.
+                log('Clearing the previous override and resetting the adapter before applying the new address.')
+                self.write_override(path, None)
+                self.restart(adapter_id)
+            log('Writing override.' if address else 'Removing the configured override.')
             self.write_override(path, (address.replace(':',''), 1) if address else None)
             log('Restarting ' + item['name'] + '; waiting for Windows to report its address.')
             self.restart(adapter_id)
             for attempt in range(6):
                 if attempt: wait(2)
-                observed = next((a for a in self.list() if a['id']==adapter_id), None)
+                try:
+                    observed = next((a for a in self.list() if a['id']==adapter_id), None)
+                    read_error = None
+                except Exception as exc:
+                    # Windows enumeration can briefly fail while a device returns.
+                    read_error = str(exc)
+                    continue
                 if observed and observed['mac'] and expected and observed['mac'] == expected:
                     return {'status':'verified','message':'Windows reports the requested address.', 'observed':observed['mac']}
                 if observed and not expected:
                     return {'status':'unverified','message':'Override removed. The driver did not expose a permanent address, so hardware restoration cannot be verified.', 'observed':observed['mac']}
-            raise RuntimeError('The driver did not report the requested address. Observed: ' + str(observed and observed['mac']))
+            detail = (' Last adapter read failed: ' + read_error) if read_error else ''
+            raise RuntimeError('Windows did not report the requested address during verification. Observed: ' + str(observed and observed['mac']) + detail)
         except Exception as exc:
             rollback = 'Previous registry setting restored and adapter restarted.'
             try:

@@ -59,7 +59,13 @@ function render(){
 }
 async function poll(){try{state=await api('state');if(firstLoad){theme(state.settings.theme);firstLoad=false;window.appReady=true;}render();if(!state.refreshing)api("ready",{title:document.title,ready:true,adapters:document.querySelectorAll(".adapter").length,theme:document.documentElement.dataset.theme}).catch(()=>{});}catch(e){$('status-text').textContent='App connection lost · '+e.message;}$('status-text').title=$('status-text').textContent;}
 async function inspectCandidate(){const serial=++candidateSerial;candidate=null;updateButtons();const value=$('candidate').value.trim();if(!value){$('candidate-info').textContent='Generate a private address or enter your own.';return;}try{const info=await api('inspect?mac='+encodeURIComponent(value));if(serial!==candidateSerial)return;candidate=info;$('candidate-info').textContent=info.kind+' · '+(!info.usable?'Not valid for an adapter.':info.match?info.match.vendor:info.local?'Private address; no vendor identity implied.':'No registered vendor match.');}catch(e){if(serial!==candidateSerial)return;$('candidate-info').textContent=e.message;}updateButtons();}
-async function generate(prefix){const info=await api('generate',prefix?{prefix}:{});$('candidate').value=info.mac;await inspectCandidate();view('workspace');}
+async function generate(prefix){
+  const info=await api('generate',prefix?{prefix,mode:$('vendor-mode').value}:{});
+  $('candidate').value=info.mac;
+  await inspectCandidate();
+  if(info.generation?.mode==='compatible')$('candidate-info').textContent='Local address based on '+info.generation.source_vendor+' · local bit changed, no vendor identity implied.';
+  view('workspace');
+}
 async function search(){const serial=++searchSerial;const query=$('vendor-search').value;try{const rows=await api('search?q='+encodeURIComponent(query));if(serial!==searchSerial)return;$('search-count').textContent=rows.length===60?'Showing the first 60 matches. Refine your search.':rows.length+' matching address blocks';$('vendor-results').innerHTML=rows.map(r=>`<tr><td>${escapeHTML(r.vendor)}</td><td>${escapeHTML(r.prefix.match(/.{1,2}/g).join(':'))}</td><td>${escapeHTML(r.registry)}</td><td>${escapeHTML(r.country||'—')}</td><td><button data-prefix="${escapeHTML(r.prefix)}" ${r.status!=='current'||(parseInt(r.prefix.slice(0,2),16)&3)?'disabled':''}>Use prefix</button></td></tr>`).join('')||'<tr><td colspan="5">No matching prefixes.</td></tr>';$('vendor-results').querySelectorAll('button').forEach(el=>el.onclick=action(()=>generate(el.dataset.prefix)));}catch(e){toast(e.message);}}
 $('candidate').addEventListener('input',()=>{candidateSerial++;candidate=null;updateButtons();clearTimeout(inspectCandidate.timer);inspectCandidate.timer=setTimeout(inspectCandidate,180);});
 $('generate').onclick=action(()=>generate());

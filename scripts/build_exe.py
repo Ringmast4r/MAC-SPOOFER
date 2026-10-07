@@ -51,7 +51,7 @@ def main() -> int:
     parser.add_argument('--stage', action='store_true')
     parser.add_argument('--install-only', action='store_true')
     args=parser.parse_args()
-    subprocess.run([sys.executable,str(ROOT/'scripts/make_icon.py')],check=True)
+    subprocess.run([sys.executable,str(ROOT/'scripts/make_icon.py')],check=True,creationflags=NO_WINDOW)
     version=(ROOT/'VERSION').read_text().strip()
     numbers=tuple(int(v) for v in version.split('.'))+(0,)
     resource = f"VSVersionInfo(ffi=FixedFileInfo(filevers={numbers},prodvers={numbers},mask=0x3f,flags=0x0,OS=0x40004,fileType=0x1,subtype=0x0,date=(0,0)),kids=[StringFileInfo([StringTable('040904B0',[StringStruct('CompanyName','Net Works Lab LLC'),StringStruct('FileDescription','MAC // Spoofer'),StringStruct('FileVersion','{version}'),StringStruct('ProductName','MAC // Spoofer'),StringStruct('ProductVersion','{version}'),StringStruct('OriginalFilename','MAC_Spoofer.exe'),StringStruct('LegalCopyright','Copyright 2026 Net Works Lab LLC')])]),VarFileInfo([VarStruct('Translation',[1033,1200])])])"
@@ -60,7 +60,7 @@ def main() -> int:
     cmd = [sys.executable, "-m", "PyInstaller", "--noconfirm",
            "--distpath", str(ROOT / "dist"), "--workpath", str(ROOT / "build"), str(spec)]
     print(" ".join(cmd))
-    rc = 0 if args.install_only else subprocess.call(cmd, cwd=ROOT)
+    rc = 0 if args.install_only else subprocess.call(cmd, cwd=ROOT, creationflags=NO_WINDOW)
     if rc != 0:
         return rc
     if args.stage: return 0

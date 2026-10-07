@@ -66,6 +66,12 @@ with patch('macspoofer.service.is_admin',return_value=True):
             page.wait_for_function('document.querySelector("#vendor-results").textContent.includes("Apple")')
             page.locator('#vendor-results button').first.click()
             page.wait_for_function('document.querySelector("#candidate-info").textContent.includes("Apple")')
+            assert int(page.input_value('#candidate')[:2],16)&3==2
+            assert 'no vendor identity implied' in page.locator('#candidate-info').inner_text()
+            page.click('[data-view="catalog"]')
+            page.select_option('#vendor-mode','exact')
+            page.locator('#vendor-results button').first.click()
+            page.wait_for_function('document.querySelector("#candidate-info").textContent.includes("Globally administered")')
             assert int(page.input_value('#candidate')[:2],16)&3==0
             page.click('[data-view="catalog"]')
             page.fill('#lookup-mac','52-54-00-12-34-56');page.click('#inspect')
@@ -104,6 +110,6 @@ with patch('macspoofer.service.is_admin',return_value=True):
             expect(strict.locator('#candidate-info')).to_contain_text('Private address')
             strict.close()
             browser.close()
-            print('UI PASS: generation, validation, exact vendor, lookup, confirmed apply/restore with simulated engine, theme persistence, four layouts, dialogs, export; no JS errors.')
+            print('UI PASS: generation, validation, compatible and exact vendor modes, lookup, confirmed apply/restore with simulated engine, theme persistence, four layouts, dialogs, export; no JS errors.')
     finally:
         server.shutdown();server.server_close()

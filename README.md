@@ -4,7 +4,7 @@
 
 `Windows` [`Python`](https://www.python.org/) [`pywebview`](https://pywebview.flowrl.com/) `Offline OUI` — Native address control with a Sin City desktop, exact vendor prefixes, observed driver outcomes and recovery records.
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=1F855F&center=true&vCenter=true&multiline=true&repeat=true&width=950&height=90&lines=MAC+%2F%2F+Spoofer+1.6.0%3B58%2C972+offline+address+blocks%3BYour+adapter.+Your+address.)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=1F855F&center=true&vCenter=true&multiline=true&repeat=true&width=950&height=90&lines=MAC+%2F%2F+Spoofer+1.6.1%3B58%2C972+offline+address+blocks%3BYour+adapter.+Your+address.)](https://git.io/typing-svg)
 
 <img src="assets/nw-globe-1024.png" width="70" alt="Net Works globe"/>
 
@@ -24,10 +24,10 @@
 
 ## `> cat project.txt`
 
-MAC // Spoofer 1.6.0 rebuilds the Windows desktop as a one-file native app using the operating system's WebView2 runtime. It replaces Tkinter with the Net Works Sin City house style: light by default, remembered dark mode, a black rail and blood-red controls. Original 1.5 source and documentation remain in `legacy/`.
+MAC // Spoofer 1.6.1 rebuilds the Windows desktop as a one-file native app using the operating system's WebView2 runtime. It replaces Tkinter with the Net Works Sin City house style: light by default, remembered dark mode, a black rail and blood-red controls. Original 1.5 source and documentation remain in `legacy/`.
 
 - **Adapter desk:** current and driver-reported permanent MAC, IPv4, connection state and configured override. Read-only refresh every 20 seconds or on demand; physical and virtual interfaces.
-- **Prepare before applying:** cryptographically random local unicast addresses, manual input or an exact vendor prefix. Generating and selecting never modify an adapter.
+- **Prepare before applying:** cryptographically random local unicast addresses, manual input, a vendor-based local address (legacy behavior) or an explicit exact registered prefix. Generating and selecting never modify an adapter.
 - **Offline intelligence:** 58,972 address blocks and 32,318 distinct owner labels from OUI Master Database's September 30, 2026 snapshot. Longest-prefix /24, /28 and /36 matching, country and source attribution.
 - **Apply and restore:** exact interface GUID targeting, explicit restart confirmation, durable pre-change journal, observed-address verification and recovery of the previous registry setting after an unsuccessful apply.
 - **Desktop lifecycle:** user-selected **Blade / Sin City 14** shortcut and tray, the Net Works globe inside the app, one instance, close to tray, Open and Exit, three shortcuts, activity and JSON export.
@@ -52,7 +52,7 @@ These are real interface renders with **synthetic adapter data**, so no owner ne
 
 A local address does not prove randomization or identify a manufacturer. Docker, VMware NSX and QEMU/KVM prefix conventions are labeled as conventions, not confirmed runtimes. This distinction was informed by the existing Leetha MAC-intelligence work; no Leetha scanning or device-correlation engine is bundled.
 
-The old generator changed a vendor prefix's local bit while retaining its vendor label. Private generation and exact-vendor generation are now separate. Some drivers reject globally administered addresses or ignore all overrides. A registry write alone is never reported as success. Removing an override is marked **unverified** if Windows does not provide a permanent address for comparison.
+Vendor selections default to the old generator's locally administered conversion. The preview now labels this as a local address based on the selected vendor, without claiming vendor identity. Select **Exact registered prefix** to retain the original prefix bits. Applying clears the existing override and resets the selected adapter before writing the new address, with the legacy three-second disable/enable settling delays. Some drivers reject globally administered addresses or ignore all overrides. A registry write alone is never reported as success. Removing an override is marked **unverified** if Windows does not provide a permanent address for comparison.
 
 A MAC change leaves hostnames, DHCP fingerprints, accounts and other independent identity signals unchanged. No universal driver compatibility is claimed.
 
@@ -67,7 +67,7 @@ A MAC change leaves hostnames, DHCP fingerprints, accounts and other independent
 | Storage | Read-only bundled SQLite OUI catalog; local settings, log and pre-change journal |
 | Permissions | Normal read-only launch; administrator restart for changes; authenticated loopback API |
 | Windows shell | Ported SANS desktop shell: named mutex/event, native window identity, ctypes Shell_NotifyIcon tray and AppUserModelID shortcuts |
-| Artwork | Existing Net Works globe and owner-selected Blade; original art, transparency master and nine ICO sizes included |
+| Artwork | Existing Net Works globe and owner-selected Blade; original art, white rounded tile and ten shortcut ICO sizes included |
 | Build | PyInstaller 6.22.3 one-file windowed EXE; Pillow 12.3.0 icons; VERSION supplies app and Windows resource versions |
 | Checks | pytest, Playwright synthetic-adapter UI checks, read-only Windows enumeration and packaged lifecycle verification |
 

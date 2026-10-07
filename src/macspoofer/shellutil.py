@@ -360,8 +360,11 @@ Add-Type -TypeDefinition $code -Language CSharp -ErrorAction Stop
     )
     if r.returncode != 0:
         write_log("stamp shortcut failed: " + (r.stderr or r.stdout or "exit %s" % r.returncode)[-500:])
+        raise RuntimeError('Windows could not update the shortcut: ' + str(lnk))
     else:
         write_log("stamped shortcut " + str(lnk))
+        import ctypes
+        ctypes.windll.shell32.SHChangeNotify(0x2000, 0x1005, ctypes.c_wchar_p(str(lnk)), None)
 
 
 def install_shortcuts(exe: Path | None = None) -> list[Path]:

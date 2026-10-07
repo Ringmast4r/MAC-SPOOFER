@@ -28,13 +28,27 @@ def test_longest_prefix_and_vendor_bits():
     with c.connect() as db:
         for length in (6,7,9):
             r=db.execute("SELECT prefix FROM prefixes WHERE length(prefix)=? AND status='current' AND substr(prefix,2,1) IN ('0','4','8','C') LIMIT 1",(length,)).fetchone()
-            info=c.generate(r['prefix'])
+            info=c.generate(r['prefix'], mode='exact')
             assert info['mac'].replace(':','').startswith(r['prefix'])
             assert not info['local'] and not info['multicast']
             assert len(info['match']['prefix'])>=length
     assert c.inspect('00:03:93:12:34:56')['match']['vendor']=='Apple'
     assert c.search('Apple')
     assert c.search("%' OR 1=1 --")==[]
+
+def test_vendor_generation_defaults_to_legacy_local_conversion(monkeypatch):
+    c=Catalog()
+    monkeypatch.setattr('macspoofer.oui.secrets.token_hex', lambda _: 'ABCDEF123456')
+    with c.connect() as db:
+        for length in (6,7,9):
+            row=db.execute("SELECT prefix FROM prefixes WHERE length(prefix)=? AND status='current' AND substr(prefix,2,1) IN ('0','4','8','C') LIMIT 1",(length,)).fetchone()
+            exact=c.generate(row['prefix'],mode='exact')
+            local=c.generate(row['prefix'])
+            assert local['mac'][2:]==exact['mac'][2:]
+            assert int(local['mac'][:2],16)==(int(exact['mac'][:2],16)|2)
+            assert local['local'] and local['usable'] and local['match'] is None
+            assert local['generation']['source_prefix']==row['prefix']
+    with pytest.raises(ValueError): c.generate('000393',mode='unknown')
 
 ID='12345678-1234-1234-1234-123456789012'
 BEFORE='00:11:22:33:44:55'
@@ -64,14 +78,14 @@ def test_apply_verifies_and_journals_before_mutation(monkeypatch):
     result=f.change(ID,AFTER,journal,lambda _:None,wait=lambda _:None)
     assert result['status']=='verified' and result['observed']==AFTER
     assert records[0]['previous_override']==('021122334455',1)
-    assert f.restarts==1
+    assert f.restarts==2
 
 def test_driver_rejection_restores_exact_previous_override(monkeypatch):
     monkeypatch.setattr(engine,'is_admin',lambda:True)
     f=Fake(reject=True)
     with pytest.raises(RuntimeError,match='did not report'):
         f.change(ID,AFTER,lambda _:None,lambda _:None,wait=lambda _:None)
-    assert f.override==('021122334455',1) and f.restarts==2
+    assert f.override==('021122334455',1) and f.restarts==3
 
 def test_restart_failure_is_not_success(monkeypatch):
     monkeypatch.setattr(engine,'is_admin',lambda:True)
@@ -79,6 +93,49 @@ def test_restart_failure_is_not_success(monkeypatch):
     with pytest.raises(RuntimeError,match='Recovery needs attention'):
         f.change(ID,AFTER,lambda _:None,lambda _:None,wait=lambda _:None)
     assert f.override==('021122334455',1)
+
+def test_driver_requiring_reset_before_replacement(monkeypatch):
+    monkeypatch.setattr(engine,'is_admin',lambda:True)
+    class NeedsReset(Fake):
+        clean=False
+        def restart(self, adapter_id):
+            if self.override is None: self.clean=True
+            elif self.override[0]==AFTER.replace(':','') and not self.clean:
+                self.restarts+=1
+                return  # Driver keeps its old address without a baseline reset.
+            super().restart(adapter_id)
+    f=NeedsReset()
+    result=f.change(ID,AFTER,lambda _:None,lambda _:None,wait=lambda _:None)
+    assert result['status']=='verified' and result['observed']==AFTER
+    assert f.writes==[None,(AFTER.replace(':',''),1)]
+
+def test_failure_during_baseline_reset_recovers_previous_value(monkeypatch):
+    monkeypatch.setattr(engine,'is_admin',lambda:True)
+    class ResetFailsOnce(Fake):
+        def restart(self, adapter_id):
+            if not self.restarts:
+                self.restarts+=1
+                raise RuntimeError('baseline reset failed')
+            super().restart(adapter_id)
+    f=ResetFailsOnce()
+    with pytest.raises(RuntimeError,match='baseline reset failed'):
+        f.change(ID,AFTER,lambda _:None,lambda _:None,wait=lambda _:None)
+    assert f.override==('021122334455',1)
+    assert f.mac=='02:11:22:33:44:55' and f.restarts==2
+
+def test_transient_enumeration_after_restart_is_retried(monkeypatch):
+    monkeypatch.setattr(engine,'is_admin',lambda:True)
+    class ReturningDevice(Fake):
+        unavailable=2
+        def list(self):
+            if self.restarts==2 and self.unavailable:
+                self.unavailable-=1
+                raise RuntimeError('adapter enumeration not ready')
+            return super().list()
+    f=ReturningDevice()
+    result=f.change(ID,AFTER,lambda _:None,lambda _:None,wait=lambda _:None)
+    assert result['status']=='verified' and result['observed']==AFTER
+    assert f.override==(AFTER.replace(':',''),1) and f.restarts==2
 
 def test_restore_removes_override(monkeypatch):
     monkeypatch.setattr(engine,'is_admin',lambda:True)
@@ -110,6 +167,8 @@ def test_http_session_and_preview_guard():
             headers={'X-MAC-Token':token,'Content-Type':'application/json'};headers.update(extra or {})
             return urllib.request.urlopen(urllib.request.Request(url+path,data=json.dumps(body).encode() if body is not None else None,headers=headers))
         assert json.load(request('api/state'))['preview']
+        assert json.load(request('api/generate',{'prefix':'000393'}))['local']
+        assert not json.load(request('api/generate',{'prefix':'000393','mode':'exact'}))['local']
         with pytest.raises(urllib.error.HTTPError) as exc:request('api/change',{'id':ID,'address':AFTER,'confirmed':True})
         assert exc.value.code==403 and not svc.engine.writes
         with pytest.raises(urllib.error.HTTPError) as exc:request('api/generate',{}, {'Origin':'https://example.com'})
