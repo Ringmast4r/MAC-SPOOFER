@@ -1,0 +1,4 @@
+Net Works globe: existing Source Code Analyzer assets/nw-globe-1024.png.
+Shortcut/tray: Blade, Sin City 14, explicitly selected by Patrick on 2026-10-07.
+Source: https://networks-corp.com/icon-demos/ ; original 1024px artwork and gallery SVG retained.
+Windows frames derived from original art using a rounded transparent outer clip; artwork is unchanged.

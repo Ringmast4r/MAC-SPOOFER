@@ -4,13 +4,18 @@
 
 ---
 
-## Current Version: 1.5.0
+## Current Version: 1.6.0
 
 ---
 
 ## Version History
 
-### Version 1.5.0 (Current)
+### Version 1.6.0 — October 7, 2026
+
+Windows Sin City refactor, Blade shortcut/tray, offline OUI catalog, exact prefixes, observed driver verification, recovery journal and one-instance lifecycle. Historical compatibility claims below are retained as history, not current driver guarantees.
+
+
+### Version 1.5.0 (Historical)
 **Release Date:** January 2025
 
 **MAJOR FIX - Intel Adapter Compatibility:**
