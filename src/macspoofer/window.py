@@ -132,4 +132,3 @@ def run_window(service) -> None:
             tray.close()
         server.shutdown()
         (DATA / "runtime.json").unlink(missing_ok=True)
-

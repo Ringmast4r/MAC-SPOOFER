@@ -391,4 +391,3 @@ def install_shortcuts(exe: Path | None = None) -> list[Path]:
             write_log("shortcut " + str(lnk) + " failed: " + str(e))
 
     return made
-
