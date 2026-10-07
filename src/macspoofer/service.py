@@ -4,6 +4,7 @@ from datetime import datetime
 from . import __version__
 from .engine import WindowsAdapters, is_admin
 from .oui import Catalog, valid_target
+from .intelligence import Intelligence
 from .paths import DATA
 from .log import write_log
 
@@ -19,6 +20,7 @@ class Service:
     def __init__(self, engine=None, catalog=None, preview=False):
         self.engine = engine or WindowsAdapters()
         self.catalog = catalog or Catalog()
+        self.intelligence = Intelligence()
         self.preview = preview
         self.lock = threading.RLock()
         self.adapters = []
@@ -46,7 +48,19 @@ class Service:
             return {'version':__version__, 'admin':is_admin() and not self.preview, 'preview':self.preview,
                     'adapters':list(self.adapters),'refreshing':self.refreshing,'error':self.error,'updated':self.updated,
                     'busy':self.busy,'result':self.result,'events':list(self.events),'settings':dict(self.settings),
-                    'catalog':self.catalog.meta}
+                    'catalog':self.catalog.meta,'intelligence':dict(self.intelligence.meta)}
+
+    def inspect(self, value):
+        info=self.catalog.inspect(value)
+        info['corpus_labels']=self.intelligence.labels(info['mac'])
+        return info
+
+    def advice(self, value, adapter_id=None):
+        info=self.catalog.inspect(value)
+        with self.lock:
+            adapters=list(self.adapters)
+        adapter=next((a for a in adapters if a['id']==adapter_id),None)
+        return self.intelligence.advice(info,adapter,adapters)
 
     def refresh(self):
         with self.lock:

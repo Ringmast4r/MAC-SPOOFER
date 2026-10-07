@@ -14,7 +14,7 @@ async function api(path, body) {
 }
 function toast(text) { $('toast').textContent=text;$('toast').hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').hidden=true,6500); }
 function action(fn){return async (...args)=>{try{await fn(...args);}catch(e){toast(e.message);}};}
-function view(name){document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!==name);document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('on',el.dataset.view===name));window.scrollTo(0,0);if(name==='catalog')search();}
+function view(name){document.querySelectorAll('.view').forEach(el=>el.hidden=el.id!==name);document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('on',el.dataset.view===name));window.scrollTo(0,0);if(name==='catalog')search();if(name==='fingerprints')window.loadFingerprintLab?.();}
 document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>view(el.dataset.view)));
 document.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',()=>$(el.dataset.close).close()));
 function current(){return state?.adapters.find(a=>a.id===selected);}
@@ -24,6 +24,7 @@ function updateButtons(){
   const a=current(); const blocked=!a||!state?.admin||state.busy||state.refreshing||!a.registry_available||['Disabled','Not Present'].includes(a.status);
   $('apply').disabled=blocked||!candidate?.usable||candidate.mac===a?.mac;
   $('restore').disabled=blocked||!a?.override;
+  window.refreshIntelligence?.();
   $('apply-hint').textContent=!state?.admin?'Administrator mode is required to apply or restore. Open the gear to relaunch.':'Applying restarts the selected adapter and briefly disconnects it.';
 }
 function render(){

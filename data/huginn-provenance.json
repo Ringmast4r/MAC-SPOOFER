@@ -1,0 +1,149 @@
+{
+  "source": "Ringmast4r/Huginn-Muninn",
+  "source_url": "https://github.com/Ringmast4r/Huginn-Muninn",
+  "built_utc": "2026-10-07T08:30:52.210968+00:00",
+  "signature_source_rows": 509978,
+  "ignored_signatures": 10,
+  "invalid_signatures": 121474,
+  "mac_source_rows": 10407911,
+  "association_source_rows": 557,
+  "satori_source_profiles": 481,
+  "signatures": 388354,
+  "labels": 40289,
+  "profiles": 777,
+  "rules": 1374,
+  "label_prefixes": 40289,
+  "duplicate_signatures": 140,
+  "source_files": [
+    {
+      "path": "DHCP_Signatures/sqlite/dhcp_signature.part-00000000-00249999.db",
+      "sha256": "5e3a1a94486524f88c9b01d5f4110571837715f8fefbef771a641617f9157fff"
+    },
+    {
+      "path": "DHCP_Signatures/sqlite/dhcp_signature.part-00250000-00499999.db",
+      "sha256": "76f99f95866f11d5a639ae0bf64adf905bc8dc446aa81d615b15356fe4896e2d"
+    },
+    {
+      "path": "DHCP_Signatures/sqlite/dhcp_signature.part-00500000-00749999.db",
+      "sha256": "6e24782ee43aebc408cbb75b43d4efade03348120276171742e72e34dbe6ea65"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-00000000-00399999.db",
+      "sha256": "1464ba46dbc55e6ada235f384b98ede46ea37ffe86db255ffb781757a9b9d9e5"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-00400000-00799999.db",
+      "sha256": "ca0ce6e0673ab2715dc59416cc7bdb74d138aac7a48f9283667fda8a8d41b1a5"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-00800000-01199999.db",
+      "sha256": "f7dac7fd4223965f503cd5d58dd9e7e7786b07b764155e9b7746b28c265a9657"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-01200000-01599999.db",
+      "sha256": "6ba1c3d3a629536f6379c0d92de6c7dc41eee5c46ab9b398fa31f1a3d60a7983"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-01600000-01999999.db",
+      "sha256": "358baea1f2180b51679166cbb370f1ebce9f271f691409c2b34ef6fbde5147e5"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-02000000-02399999.db",
+      "sha256": "019624c43dd4185d4ad0f41b73108e95f3b610577ab095970016513879e11015"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-02400000-02799999.db",
+      "sha256": "6536a607dfb35e9e3902c559506d4185c40116f2053648b29539b001617db1ba"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-02800000-03199999.db",
+      "sha256": "ea2d070acf00d78058947a6da8b4bf0247caf7bc29338a573093ea6fdfc1f632"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-03200000-03599999.db",
+      "sha256": "dd0e12bcd990510b92644b982f82f5e25eeac2652f65011a7d6c70e62399eac2"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-03600000-03999999.db",
+      "sha256": "a7b0ca9984d7d179de1f5fa72279f8739aaaf933c66569e2738689c1ca7522ad"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-04000000-04399999.db",
+      "sha256": "f0739bdc8db590dbbb4f12ecc269cb0bb920630934cf35147bc144ec512df9bd"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-04400000-04799999.db",
+      "sha256": "8dc1d92210d8ca9dde5c58897eb028e3b404f499eec9d4bf875eb57b56c80e70"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-04800000-05199999.db",
+      "sha256": "889d46f86a9cba820aaab77edb8b32dac5330d23ce865a962c239faab0c48021"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-05200000-05599999.db",
+      "sha256": "6dc33c4ba0ff7b8ca85f337e514d906e83ca53f02d2cdf3abc7e463ad1adc3ef"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-05600000-05999999.db",
+      "sha256": "a899a6560f7e95e8f49dd9a8f98ebe1dbb1a3b4a0924c62761b5874ee1e3a33a"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-06000000-06399999.db",
+      "sha256": "f81d42e5820cdba2de955cbf388f392a9d16c9d301603ce040efc9d12d5893bd"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-06400000-06799999.db",
+      "sha256": "0ef1f10e46cac3a65291ba7c703fe0f01928eb7d4f35a6783014ef0b8f37b938"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-06800000-07199999.db",
+      "sha256": "b2bb708494be4fa1b5787fffec272ae1cb8a2788cfa6ab2b8d0b71f0e3b1dc15"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-07200000-07599999.db",
+      "sha256": "f83db03ac53e5bb1fcd656ec13f035e1866de1a087fc3de3507beb0b077c0db9"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-07600000-07999999.db",
+      "sha256": "a9adbbdaab39486201f5234a633084cef2a20bbed526f758b19ca0e924eff323"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-08000000-08399999.db",
+      "sha256": "b8f539c92a4bfe19caa2d5c4193ad5816cf3d00928f4544d9c3111e9b5ccd350"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-08400000-08799999.db",
+      "sha256": "fd5b53242c3afa19b6d6dacf0c073ea672586971dea1da3656cbaaee744fc33b"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-08800000-09199999.db",
+      "sha256": "56092b6ef053c33bb3fc1bbe9507c85b2d94722c52160fa538b52a2b977f1bd5"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-09200000-09599999.db",
+      "sha256": "c08286d42cddff9f61e29e3322d7bd5d1277798bd0b94ae5133136528d9d7cbb"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-09600000-09999999.db",
+      "sha256": "9953d767474cfbba4dfa11410baa209d028321578a85bc2d635e85ba3694df1c"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-10000000-10399999.db",
+      "sha256": "aa2ecbdcc22019dbddcec4726d010102998e833de14af38c15759af72ad64ba1"
+    },
+    {
+      "path": "MAC_Vendors/sqlite/mac_vendor.part-10400000-10799999.db",
+      "sha256": "aff98e6eb4d7301ba8d81a049450d99ab5628fe1452ebac662bc7922be797485"
+    },
+    {
+      "path": "Satori_Fingerprints/sqlite/dhcp.db",
+      "sha256": "1d674b0f6cdd0347112039d84911a3e56c256e609683a4d8bee93b743a158fb5"
+    },
+    {
+      "path": "Combinations/sqlite/dhcp_combinations.db",
+      "sha256": "e429b8150ef7ded7b7516ce0be0bbcc26c14869ec9fd4ac8edabe41ec25056ad"
+    }
+  ],
+  "selection": "Non-ignored valid Option 55 sequences; exact Satori and combination associations; MAC corpus labels restricted to registered OUI parent prefixes.",
+  "limitations": "Option 55 alone is not full device identification. Conditional rule fields and packet types remain visible. Weights are not probabilities. Source rows are not observed device counts."
+}

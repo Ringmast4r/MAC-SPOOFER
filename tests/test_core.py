@@ -169,6 +169,9 @@ def test_http_session_and_preview_guard():
         assert json.load(request('api/state'))['preview']
         assert json.load(request('api/generate',{'prefix':'000393'}))['local']
         assert not json.load(request('api/generate',{'prefix':'000393','mode':'exact'}))['local']
+        assert json.load(request('api/advice?mac=02:03:93:12:34:56'))['corpus_labels']==[]
+        assert json.load(request('api/profiles?q=Windows'))
+        assert json.load(request('api/fingerprints?options=1,3,6,15,31,33,43,44,46,47,121,249,252'))['total_rules']>0
         with pytest.raises(urllib.error.HTTPError) as exc:request('api/change',{'id':ID,'address':AFTER,'confirmed':True})
         assert exc.value.code==403 and not svc.engine.writes
         with pytest.raises(urllib.error.HTTPError) as exc:request('api/generate',{}, {'Origin':'https://example.com'})

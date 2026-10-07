@@ -4,7 +4,7 @@
 
 `Windows` [`Python`](https://www.python.org/) [`pywebview`](https://pywebview.flowrl.com/) `Offline OUI` — Native address control with a Sin City desktop, exact vendor prefixes, observed driver outcomes and recovery records.
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=1F855F&center=true&vCenter=true&multiline=true&repeat=true&width=950&height=90&lines=MAC+%2F%2F+Spoofer+1.6.1%3B58%2C972+offline+address+blocks%3BYour+adapter.+Your+address.)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=1F855F&center=true&vCenter=true&multiline=true&repeat=true&width=950&height=90&lines=MAC+%2F%2F+Spoofer+1.7.0%3B58%2C972+offline+address+blocks%3BYour+adapter.+Your+address.)](https://git.io/typing-svg)
 
 <img src="assets/nw-globe-1024.png" width="70" alt="Net Works globe"/>
 
@@ -24,12 +24,14 @@
 
 ## `> cat project.txt`
 
-MAC // Spoofer 1.6.1 rebuilds the Windows desktop as a one-file native app using the operating system's WebView2 runtime. It replaces Tkinter with the Net Works Sin City house style: light by default, remembered dark mode, a black rail and blood-red controls. Original 1.5 source and documentation remain in `legacy/`.
+MAC // Spoofer 1.7.0 rebuilds the Windows desktop as a one-file native app using the operating system's WebView2 runtime. It replaces Tkinter with the Net Works Sin City house style: light by default, remembered dark mode, a black rail and blood-red controls. Original 1.5 source and documentation remain in `legacy/`.
 
 - **Adapter desk:** current and driver-reported permanent MAC, IPv4, connection state and configured override. Read-only refresh every 20 seconds or on demand; physical and virtual interfaces.
 - **Prepare before applying:** cryptographically random local unicast addresses, manual input, a vendor-based local address (legacy behavior) or an explicit exact registered prefix. Generating and selecting never modify an adapter.
 - **Offline intelligence:** 58,972 address blocks and 32,318 distinct owner labels from OUI Master Database's September 30, 2026 snapshot. Longest-prefix /24, /28 and /36 matching, country and source attribution.
 - **Apply and restore:** exact interface GUID targeting, explicit restart confirmation, durable pre-change journal, observed-address verification and recovery of the previous registry setting after an unsuccessful apply.
+- **Selection guidance:** private versus exact-prefix recommendations, local adapter collision checks, and corroborating Huginn-Muninn labels without attributing local addresses to manufacturers.
+- **Fingerprint lab:** 388,354 cleaned Option 55 sequences and 1,374 association rules, offline device-reference browsing, preserved source conditions and weights, and explanations of identity signals a MAC change leaves untouched.
 - **Desktop lifecycle:** user-selected **Blade / Sin City 14** shortcut and tray, the Net Works globe inside the app, one instance, close to tray, Open and Exit, three shortcuts, activity and JSON export.
 
 ## `> open windows.exe`
@@ -48,6 +50,8 @@ These are real interface renders with **synthetic adapter data**, so no owner ne
 ![Dark desktop](docs/assets/desktop-dark.png)
 ![Offline OUI catalog](docs/assets/oui-catalog.png)
 
+![Huginn-Muninn Fingerprint Lab](docs/assets/fingerprint-lab.png)
+
 ## `> understand address_identity`
 
 A local address does not prove randomization or identify a manufacturer. Docker, VMware NSX and QEMU/KVM prefix conventions are labeled as conventions, not confirmed runtimes. This distinction was informed by the existing Leetha MAC-intelligence work; no Leetha scanning or device-correlation engine is bundled.
@@ -55,6 +59,8 @@ A local address does not prove randomization or identify a manufacturer. Docker,
 Vendor selections default to the old generator's locally administered conversion. The preview now labels this as a local address based on the selected vendor, without claiming vendor identity. Select **Exact registered prefix** to retain the original prefix bits. Applying clears the existing override and resets the selected adapter before writing the new address, with the legacy three-second disable/enable settling delays. Some drivers reject globally administered addresses or ignore all overrides. A registry write alone is never reported as success. Removing an override is marked **unverified** if Windows does not provide a permanent address for comparison.
 
 A MAC change leaves hostnames, DHCP fingerprints, accounts and other independent identity signals unchanged. No universal driver compatibility is claimed.
+
+The Fingerprint Lab compares user-entered DHCP Option 55 sequences with the offline corpus; it does not capture traffic or rewrite DHCP. Known sequences without mappings are distinguished from rule matches. Reference examples are labeled, packet-type and additional constraints remain unverified, and weights are not confidence percentages. See [corpus provenance and coverage](data/HUGINN-SOURCES.md).
 
 ## `> tech_stack --full`
 

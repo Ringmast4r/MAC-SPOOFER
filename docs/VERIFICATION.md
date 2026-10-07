@@ -1,5 +1,14 @@
 # Windows verification
 
+## 1.7.0 — October 7, 2026
+
+- 37 pytest cases passed, including ordered DHCP Option 55 validation, known-but-unmapped sequences, conditional rules, source weights, search escaping, local-address attribution, collision guidance, missing-corpus fallback and bundled corpus checks.
+- Headless Chrome workflow checks passed selection guidance, reference search and lookup, invalid DHCP input, manual versus reference labels, both themes and responsive layouts with no JavaScript errors. Looking up a reference does not change the candidate MAC or call the adapter engine. Existing simulated apply/restore and production Content Security Policy checks also passed.
+- The offline Huginn–Muninn index contains 388,354 distinct valid Option 55 sequences, 1,374 source rules and 40,289 registered-prefix labels. The source manifest records filtering, source hashes and overlapping profile counts; these are corpus records, not devices observed on this machine.
+- Root and dist EXEs match SHA-256 `53b4b649a4a1a717ff222df3813bc923793215199b92aa5f105700b63b46a3fb`. Windows file resources and the running API report 1.7.0. Installed checks verified both packaged corpora, fingerprint lookup and bundled asset hashes with zero JavaScript errors.
+- The native WebView2 renderer reported ready, the tray registered and two physical adapters were enumerated read-only. The owner's current saved light preference was preserved; dark mode remains available and tested. Desktop, Start Menu and project shortcuts retain the white Blade icon and target the installed root EXE. Background helpers use hidden windows.
+- No physical adapter MAC or override was changed. Huginn–Muninn source databases and separate portal/container services were not modified. Native Desktop pixel inspection and actual tray-menu clicking remain unavailable because the Computer Use pipe is unavailable; renderer readiness is verified separately. Physical driver acceptance remains untested.
+
 ## 1.6.1 — October 7, 2026
 
 - Compared against the retained 1.5 GUI: vendor presets set the local bit, and application clears the override and resets the adapter before applying the next address. Both behaviors are restored. Exact registered prefixes remain an explicit option, and local conversions do not claim vendor attribution.

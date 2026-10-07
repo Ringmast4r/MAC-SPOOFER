@@ -44,9 +44,14 @@ def start_server(service, desktop=None, port=PORT):
                 args = parse_qs(url.query)
                 if url.path == '/api/state': self.send(200,service.state()); return
                 if url.path == '/api/search': self.send(200,service.catalog.search(args.get('q',[''])[0])); return
-                if url.path == '/api/inspect': self.send(200,service.catalog.inspect(args.get('mac',[''])[0])); return
+                if url.path == '/api/inspect': self.send(200,service.inspect(args.get('mac',[''])[0])); return
+                if url.path == '/api/advice': self.send(200,service.advice(args.get('mac',[''])[0],args.get('adapter',[None])[0])); return
+                if url.path == '/api/fingerprints': self.send(200,service.intelligence.dhcp(args.get('options',[''])[0])); return
+                if url.path == '/api/profiles': self.send(200,service.intelligence.profiles(args.get('q',[''])[0])); return
+                if url.path == '/api/profile': self.send(200,service.intelligence.profile(args.get('id',[''])[0])); return
                 if url.path == '/api/export': self.send(200,service.state()); return
-                names = {'/':'index.html','/css/style.css':'css/style.css','/js/app.js':'js/app.js','/img/nw-globe.png':'img/nw-globe.png'}
+                names = {'/':'index.html','/css/style.css':'css/style.css','/js/app.js':'js/app.js','/img/nw-globe.png':'img/nw-globe.png',
+                         '/js/intelligence.js':'js/intelligence.js','/css/intelligence.css':'css/intelligence.css'}
                 if url.path not in names: self.send(404,{'error':'Not found'}); return
                 path = public / names[url.path]
                 body = path.read_bytes()
